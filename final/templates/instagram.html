@@ -1,0 +1,2012 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Instagram Profile Analyzer - AI-Powered Fake Account Detection</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #f8f9fa;
+            color: #2d3436;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            width: 100%;
+        }
+
+        .header {
+            background: #ffffff;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            padding: 0 2rem;
+        }
+
+        .nav-wrapper {
+            background: #ffffff;
+            border-radius: 50px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 0 2rem;
+            max-width: 1200px;
+            width: 100%;
+        }
+
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+            width: 100%;
+            position: relative;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #000000;
+        }
+
+        .logo i {
+            margin-right: 10px;
+            font-size: 2rem;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+            margin: 0;
+            padding: 0;
+            flex-shrink: 0;
+            transform: translateX(-38px);
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #2d3436;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: #e74c3c;
+        }
+
+        .hero {
+            background: linear-gradient(135deg, #000000 0%, #1a1a1a 50%, #2d2d2d 100%);
+            color: white;
+            padding: 60px 0;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="%23ffffff" fill-opacity="0.1" d="M0,96L48,112C96,128,192,160,288,160C384,160,480,128,576,122.7C672,117,768,139,864,138.7C960,139,1056,117,1152,96C1248,75,1344,53,1392,42.7L1440,32L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg>') no-repeat bottom;
+            background-size: cover;
+        }
+
+        .hero h1 {
+            font-size: 4rem;
+            margin-bottom: 1.5rem;
+            font-weight: 700;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero p {
+            font-size: 1.4rem;
+            margin-bottom: 2.5rem;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+            position: relative;
+            z-index: 1;
+            line-height: 1.6;
+        }
+
+        .hero-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+            margin-top: 0;
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .hero-text {
+            text-align: left;
+            flex: 1;
+            max-width: 500px;
+            margin-right: 2rem;
+            transform: translateY(-40px);
+        }
+
+        .hero-text h1 {
+            margin-bottom: 1.5rem;
+        }
+
+        .hero-text p {
+            margin-left: 0;
+            margin-right: 0;
+            max-width: 500px;
+        }
+
+        .hero-cta {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .cta-primary,
+        .cta-secondary {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.8rem 1.8rem;
+            border-radius: 40px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            border: 2px solid transparent;
+        }
+
+        .cta-primary {
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+            color: #6c757d;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .cta-primary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(108, 117, 125, 0.1), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .cta-primary:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+            border-color: rgba(108, 117, 125, 0.3);
+            background: linear-gradient(135deg, #ffffff 0%, #ffffff 100%);
+        }
+
+        .cta-primary:hover::before {
+            left: 100%;
+        }
+
+        .cta-primary:active {
+            transform: translateY(-1px) scale(1.02);
+        }
+
+        .cta-secondary {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.05) 100%);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.4);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .cta-secondary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .cta-secondary:hover {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.25) 0%, rgba(255, 255, 255, 0.15) 100%);
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+            border-color: rgba(255, 255, 255, 0.6);
+        }
+
+        .cta-secondary:hover::before {
+            left: 100%;
+        }
+
+        .cta-secondary:active {
+            transform: translateY(-1px) scale(1.02);
+        }
+
+        .cta-primary i,
+        .cta-secondary i {
+            font-size: 0.9rem;
+            transition: transform 0.3s ease;
+        }
+
+        .cta-primary:hover i,
+        .cta-secondary:hover i {
+            transform: scale(1.2) rotate(5deg);
+        }
+
+        .hero-visual {
+            position: relative;
+            perspective: 1000px;
+            transform: translateY(-30px) translateX(58px);
+        }
+
+        .phone-mockup {
+            position: relative;
+            height: 400px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .phone-container {
+            position: relative;
+            transform-style: preserve-3d;
+        }
+
+        .phone {
+            width: 300px;
+            height: 600px;
+            background: linear-gradient(145deg, #1a1a1a 0%, #2d2d2d 50%, #1a1a1a 100%);
+            border-radius: 45px;
+            position: relative;
+            box-shadow:
+                0 80px 120px rgba(0, 0, 0, 0.4),
+                0 30px 60px rgba(0, 0, 0, 0.3),
+                0 10px 20px rgba(0, 0, 0, 0.2),
+                inset 0 0 0 1px rgba(255, 255, 255, 0.15),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            transform-style: preserve-3d;
+            transform: rotateX(0deg) rotateY(0deg);
+        }
+
+        .phone-screen {
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            right: 8px;
+            bottom: 8px;
+            background: #000;
+            border-radius: 35px;
+            overflow: hidden;
+            box-shadow:
+                inset 0 0 30px rgba(0, 0, 0, 0.5),
+                0 0 0 1px rgba(255, 255, 255, 0.05);
+        }
+
+        .app-content {
+            height: 100%;
+            background: white;
+            color: #333;
+        }
+
+        .app-header {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            color: #2d3436;
+            padding: 2rem 1.2rem 1.2rem;
+            position: relative;
+            overflow: hidden;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .app-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(0, 0, 0, 0.05), transparent);
+            transform: rotate(45deg);
+            animation: shimmer 3s linear infinite;
+        }
+
+        .app-nav {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 1rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .app-nav .app-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #2d3436;
+            text-align: center;
+        }
+
+        .profile-section {
+            display: flex;
+            align-items: center;
+            gap: 1.2rem;
+            padding: 1.5rem;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            z-index: 1;
+            margin: 1rem 0.5rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            box-sizing: border-box;
+            width: calc(100% - 1rem);
+        }
+
+        .profile-pic-placeholder {
+            width: 60px;
+            height: 60px;
+            min-width: 60px;
+            min-height: 60px;
+            max-width: 60px;
+            max-height: 60px;
+            background: linear-gradient(135deg, #495057 0%, #343a40 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            flex-shrink: 0;
+        }
+
+        .profile-pic-placeholder i {
+            color: #ffffff;
+            font-size: 1.5rem;
+        }
+
+        .profile-info {
+            flex: 1;
+        }
+
+        .profile-info h4 {
+            margin: 0;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #ffffff;
+        }
+
+        .profile-info p {
+            margin: 0.25rem 0 0 0;
+            font-size: 0.9rem;
+            color: #b8bfc6;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .profile-status {
+            font-weight: 500;
+        }
+
+        .verified-inline {
+            color: #28a745;
+            font-size: 0.9rem;
+            filter: drop-shadow(0 0 2px rgba(40, 167, 69, 0.3));
+        }
+
+        .verified-badge {
+            margin-left: auto;
+            color: #28a745;
+            font-size: 1rem;
+            filter: drop-shadow(0 0 4px rgba(40, 167, 69, 0.5));
+            flex-shrink: 0;
+            align-self: center;
+            margin-right: 0.5rem;
+        }
+
+        .analysis-results {
+            padding: 1.5rem;
+            background: #ffffff;
+            border-top: 1px solid #e9ecef;
+        }
+
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            margin-bottom: 0.8rem;
+            background: #f8f9fa;
+            border-radius: 15px;
+            border-left: 4px solid #007bff;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .result-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            background: #ffffff;
+        }
+
+        .result-item .label {
+            font-size: 0.9rem;
+            color: #6c757d;
+            font-weight: 500;
+        }
+
+        .result-item .value {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #2d3436;
+        }
+
+        .result-item .value.low {
+            color: #28a745;
+        }
+
+        .result-item .value.authentic {
+            color: #17a2b8;
+        }
+
+        .social-platforms {
+            background: #f8f9fa;
+            border-top: 1px solid #e9ecef;
+        }
+
+        .platforms-grid {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 1.5rem 0;
+        }
+
+        .platforms-grid i {
+            font-size: 2rem;
+        }
+
+        .x-logo-img {
+            width: 2rem;
+            height: 2rem;
+            object-fit: contain;
+        }
+
+        .platforms-grid i:nth-child(1) {
+            color: #E4405F;
+            /* Instagram */
+        }
+
+        .platforms-grid i:nth-child(3) {
+            color: #1877F2;
+            /* Facebook */
+        }
+
+        .phone-notch {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 140px;
+            height: 30px;
+            background: #000;
+            border-radius: 0 0 20px 20px;
+            z-index: 10;
+            box-shadow:
+                inset 0 2px 5px rgba(0, 0, 0, 0.8),
+                0 1px 0 rgba(255, 255, 255, 0.1);
+        }
+
+        .phone-camera {
+            position: absolute;
+            top: 18px;
+            left: 35px;
+            width: 10px;
+            height: 10px;
+            background: radial-gradient(circle, #333 0%, #000 100%);
+            border-radius: 50%;
+            z-index: 10;
+            box-shadow:
+                inset 0 1px 2px rgba(0, 0, 0, 0.5),
+                0 0 0 1px rgba(255, 255, 255, 0.1);
+        }
+
+        .phone-speaker {
+            position: absolute;
+            top: 20px;
+            right: 35px;
+            width: 30px;
+            height: 6px;
+            background: linear-gradient(90deg, #222 0%, #333 50%, #222 100%);
+            border-radius: 3px;
+            z-index: 10;
+            opacity: 0.8;
+        }
+
+        .phone-shadow {
+            position: absolute;
+            bottom: -40px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 250px;
+            height: 25px;
+            background: radial-gradient(ellipse, rgba(0, 0, 0, 0.3) 0%, transparent 70%);
+            border-radius: 50%;
+            filter: blur(20px);
+        }
+
+        @keyframes phoneFloat {
+
+            0%,
+            100% {
+                transform: translateY(0px) rotateX(0deg) rotateY(0deg);
+            }
+
+            50% {
+                transform: translateY(-20px) rotateX(0deg) rotateY(0deg);
+            }
+        }
+
+        @keyframes phoneRotate {
+            0% {
+                transform: translateY(0px) rotateX(0deg) rotateY(0deg);
+            }
+
+            25% {
+                transform: translateY(-10px) rotateX(0deg) rotateY(0deg);
+            }
+
+            50% {
+                transform: translateY(0px) rotateX(0deg) rotateY(0deg);
+            }
+
+            75% {
+                transform: translateY(-10px) rotateX(0deg) rotateY(0deg);
+            }
+
+            100% {
+                transform: translateY(0px) rotateX(0deg) rotateY(0deg);
+            }
+        }
+
+        @keyframes shimmer {
+            0% {
+                transform: translateX(-100%) translateY(-100%) rotate(45deg);
+            }
+
+            100% {
+                transform: translateX(100%) translateY(100%) rotate(45deg);
+            }
+        }
+
+        .scroll-indicator {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1;
+            animation: bounce 2s infinite;
+        }
+
+        .scroll-indicator i {
+            font-size: 2rem;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        @keyframes bounce {
+
+            0%,
+            20%,
+            50%,
+            80%,
+            100% {
+                transform: translateX(-50%) translateY(0);
+            }
+
+            40% {
+                transform: translateX(-50%) translateY(-10px);
+            }
+
+            60% {
+                transform: translateX(-50%) translateY(-5px);
+            }
+        }
+
+        .search-section {
+            padding: 120px 0;
+            background: white;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+        }
+
+        .search-card {
+            background: white;
+            border-radius: 20px;
+            padding: 3rem;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            margin: 0 auto;
+            border: 1px solid #e1e8ed;
+        }
+
+        .search-card h2 {
+            text-align: center;
+            margin-bottom: 2rem;
+            color: #2d3436;
+            font-size: 2rem;
+        }
+
+        .input-group {
+            position: relative;
+            margin-bottom: 1.5rem;
+        }
+
+        .input-group i {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #495057;
+            font-size: 1.2rem;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 1.2rem 1.2rem 1.2rem 3.5rem;
+            border: 2px solid #e1e8ed;
+            border-radius: 50px;
+            font-size: 1rem;
+            transition: all 0.3s;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .input-field:focus {
+            outline: none;
+            border-color: #6c757d;
+            box-shadow: 0 0 0 3px rgba(108, 117, 125, 0.1);
+        }
+
+        .analyze-btn {
+            width: 100%;
+            padding: 1.2rem 2rem;
+            background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .analyze-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(108, 117, 125, 0.3);
+        }
+
+        .analyze-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .error-message {
+            color: #e74c3c;
+            text-align: center;
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            display: none;
+        }
+
+        .loading-section {
+            padding: 80px 0;
+            background: linear-gradient(135deg, #000000 0%, #1a1a1a 50%, #2d2d2d 100%);
+            display: none;
+            min-height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 9999;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .loading-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border-radius: 30px;
+            padding: 4rem;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+            max-width: 500px;
+            margin: 0 auto;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+
+        .spinner {
+            width: 80px;
+            height: 80px;
+            border: 6px solid rgba(255, 255, 255, 0.1);
+            border-top: 6px solid #ffffff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 2rem;
+            position: relative;
+        }
+
+        .spinner::after {
+            content: '';
+            position: absolute;
+            top: -6px;
+            left: -6px;
+            right: -6px;
+            bottom: -6px;
+            border: 6px solid transparent;
+            border-top: 6px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            animation: spin 1.5s linear infinite reverse;
+        }
+
+        .loading-percentage {
+            font-size: 3rem;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 1rem;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .loading-progress-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+
+        .loading-progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ffffff 0%, #f8f9fa 100%);
+            border-radius: 10px;
+            transition: width 0.3s ease;
+            width: 0%;
+        }
+
+        .loading-card h3 {
+            color: #ffffff;
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .loading-card p {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 1rem;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .results-section {
+            padding: 80px 0;
+            background: #f8f9fa;
+            display: none;
+        }
+
+        .result-card {
+            background: white;
+            border-radius: 20px;
+            padding: 3rem;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e1e8ed;
+        }
+
+        .profile-header {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            margin-bottom: 3rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid #e1e8ed;
+        }
+
+        .profile-pic {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid #e1e8ed;
+        }
+
+        .profile-info h3 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            color: #2d3436;
+        }
+
+        .profile-info p {
+            color: #636e72;
+            margin-bottom: 1rem;
+        }
+
+        .verification-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .badge-real {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .badge-fake {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .confidence-section {
+            margin-bottom: 3rem;
+        }
+
+        .confidence-bar {
+            height: 10px;
+            background: #e1e8ed;
+            border-radius: 5px;
+            overflow: hidden;
+            margin-top: 1rem;
+        }
+
+        .confidence-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #2d3436 0%, #636e72 100%);
+            transition: width 1s ease;
+            border-radius: 15px;
+            text-align: center;
+            border: 1px solid #e1e8ed;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #2d3436;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Features Section */
+        .features-section {
+            padding: 5rem 0;
+            background: #f8f9fc;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 3rem;
+            color: #2c3e50;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+        }
+
+        .feature-card {
+            background: #ffffff;
+            padding: 2.5rem;
+            border-radius: 20px;
+            text-align: center;
+            transition: all 0.3s ease;
+            border: 1px solid #e1e8ed;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            border-color: #2d3436;
+        }
+
+        .feature-icon {
+            width: 70px;
+            height: 70px;
+            margin: 0 auto 1.5rem;
+            background: linear-gradient(135deg, #2d3436 0%, #636e72 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            color: #ffffff;
+        }
+
+        .feature-card h3 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: #2c3e50;
+        }
+
+        .feature-card p {
+            color: #636e72;
+            line-height: 1.6;
+        }
+
+        .stat-label {
+            color: #636e72;
+            font-size: 0.9rem;
+        }
+
+        /* Info Grid for Results */
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+
+        .info-card {
+            background: #ffffff;
+            border: 1px solid #e1e8ed;
+            border-radius: 15px;
+            padding: 1rem;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .info-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .info-label {
+            font-size: 0.9rem;
+            color: #636e72;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .info-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #2d3436;
+            margin-bottom: 0.5rem;
+        }
+
+        .reasons-card {
+            background: #f8f9fa;
+            border: 1px solid #e1e8ed;
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .reasons-card h4 {
+            color: #2d3436;
+            margin-bottom: 1rem;
+        }
+
+        .reasons-card ul {
+            color: #636e72;
+            margin-left: 1rem;
+        }
+
+        .reasons-card li {
+            margin-bottom: 0.5rem;
+        }
+
+        .badge-real {
+            background: #27ae60;
+            color: white;
+        }
+
+        .badge-fake {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .report-section {
+            margin: 2rem 0;
+            text-align: center;
+        }
+
+        .report-btn {
+            background: linear-gradient(135deg, #2d3436 0%, #636e72 100%);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 30px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .report-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(45, 52, 54, 0.3);
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .feature-card {
+            background: #f8f9fa;
+            padding: 2rem;
+            border-radius: 20px;
+            text-align: center;
+            border: 1px solid #e1e8ed;
+            transition: transform 0.3s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .feature-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            font-size: 2rem;
+        }
+
+        .icon-blue {
+            background: #e3f2fd;
+            color: #2196f3;
+        }
+
+        .icon-green {
+            background: #e8f5e8;
+            color: #4caf50;
+        }
+
+        .icon-purple {
+            background: #f8f9fa;
+            color: #495057;
+        }
+
+        .feature-card h3 {
+            margin-bottom: 1rem;
+            color: #2d3436;
+        }
+
+        .feature-card p {
+            color: #636e72;
+            line-height: 1.6;
+        }
+
+        .footer {
+            background: #2d3436;
+            color: white;
+            padding: 3rem 0 1rem;
+            text-align: center;
+        }
+
+        .footer-content {
+            margin-bottom: 2rem;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .footer-links a {
+            color: white;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: #e74c3c;
+        }
+
+        .mobile-menu {
+            display: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .mobile-menu {
+                display: block;
+            }
+
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .hero p {
+                font-size: 1.2rem;
+                max-width: 500px;
+            }
+
+            .hero-content {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+                text-align: center;
+            }
+
+            .hero-text {
+                text-align: center;
+            }
+
+            .hero-text p {
+                margin-left: auto;
+                margin-right: auto;
+            }
+
+            .hero-cta {
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+
+            .phone-mockup {
+                height: 300px;
+            }
+
+            .phone {
+                width: 240px;
+                height: 480px;
+            }
+
+            .phone-screen {
+                top: 6px;
+                left: 6px;
+                right: 6px;
+                bottom: 6px;
+                border-radius: 28px;
+            }
+
+            .phone-notch {
+                width: 110px;
+                height: 24px;
+                border-radius: 0 0 16px 16px;
+            }
+
+            .phone-camera {
+                top: 14px;
+                left: 28px;
+                width: 8px;
+                height: 8px;
+            }
+
+            .phone-speaker {
+                top: 16px;
+                right: 28px;
+                width: 24px;
+                height: 5px;
+            }
+
+            .app-nav {
+                margin-bottom: 0.8rem;
+            }
+
+            .app-title {
+                font-size: 0.8rem;
+            }
+
+            .profile-section {
+                padding: 0.8rem;
+            }
+
+            .profile-pic-placeholder {
+                width: 40px;
+                height: 40px;
+            }
+
+            .profile-pic-placeholder i {
+                font-size: 1.2rem;
+            }
+
+            .profile-info h4 {
+                font-size: 0.8rem;
+            }
+
+            .profile-info p {
+                font-size: 0.7rem;
+            }
+
+            .verified-badge {
+                font-size: 1rem;
+            }
+
+            .analysis-results {
+                padding: 0.8rem;
+            }
+
+            .result-item {
+                padding: 0.6rem;
+                margin-bottom: 0.4rem;
+            }
+
+            .result-item .label {
+                font-size: 0.7rem;
+            }
+
+            .result-item .value {
+                font-size: 0.8rem;
+            }
+
+            .platforms-grid i {
+                font-size: 1.5rem;
+            }
+
+            .x-logo-img {
+                width: 1.5rem;
+                height: 1.5rem;
+            }
+
+            .scroll-indicator {
+                bottom: 20px;
+            }
+
+            .scroll-indicator i {
+                font-size: 1.5rem;
+            }
+
+            .profile-header {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .features-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="nav-wrapper">
+            <nav class="nav">
+                <div class="logo">
+                    <i class="fab fa-instagram"></i>
+                    NeuroVerify
+                </div>
+                <ul class="nav-links">
+                    <li><a href="#home">Home</a></li>
+                    <li><a href="#features">Features</a></li>
+                    <li><a href="#about">About</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-text">
+                    <h1>Detect Fake Social Media Profiles</h1>
+                    <p>Advanced AI-powered analysis to identify fake social media accounts and protect yourself from
+                        scams.</p>
+                    <div class="hero-cta">
+                        <a href="#search" class="cta-primary">
+                            <i class="fas fa-search"></i>
+                            Start Analysis
+                        </a>
+                        <a href="#features" class="cta-secondary">
+                            <i class="fas fa-info-circle"></i>
+                            Learn More
+                        </a>
+                    </div>
+                </div>
+                <div class="hero-visual">
+                    <div class="phone-mockup">
+                        <div class="phone-container">
+                            <div class="phone">
+                                <div class="phone-screen">
+                                    <div class="app-content">
+                                        <div class="app-header">
+                                            <div class="app-nav">
+                                                <div class="app-title">NeuroVerify</div>
+                                            </div>
+                                            <div class="profile-section">
+                                                <div class="profile-pic-placeholder">
+                                                    <i class="fas fa-user"></i>
+                                                </div>
+                                                <div class="profile-info">
+                                                    <h4>@username</h4>
+                                                    <p class="profile-status">
+                                                        Real Profile
+                                                        <i class="fas fa-check-circle verified-inline"></i>
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            <div class="analysis-results">
+                                                <div class="result-item">
+                                                    <span class="label">Confidence</span>
+                                                    <span class="value">98%</span>
+                                                </div>
+                                                <div class="result-item">
+                                                    <span class="label">Risk Level</span>
+                                                    <span class="value low">Low</span>
+                                                </div>
+                                                <div class="result-item">
+                                                    <span class="label">Status</span>
+                                                    <span class="value authentic">Authentic</span>
+                                                </div>
+                                            </div>
+                                            <div class="social-platforms">
+                                                <div class="platforms-grid">
+                                                    <i class="fab fa-instagram"></i>
+                                                    <img src="https://res.cloudinary.com/dx9bvma03/image/upload/v1763280993/twitter-x-logo-png_seeklogo-492396_miezbd.png"
+                                                        alt="X" class="x-logo-img">
+                                                    <i class="fab fa-facebook"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="phone-notch"></div>
+                            </div>
+                            <div class="phone-shadow"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="scroll-indicator">
+            <i class="fas fa-chevron-down"></i>
+        </div>
+    </section>
+
+    <!-- Search Section -->
+    <section class="search-section" id="search">
+        <div class="container">
+            <div class="search-card">
+                <h2>Analyze Instagram Profile</h2>
+                <form id="searchForm">
+                    <div class="input-group">
+                        <i class="fas fa-user"></i>
+                        <input type="text" id="usernameInput" class="input-field"
+                            placeholder="Enter Instagram username (e.g., instagram)" autocomplete="off"
+                            spellcheck="false" required>
+                    </div>
+                    <button type="submit" class="analyze-btn" id="analyzeBtn">
+                        <span id="analyzeText">Analyze Profile</span>
+                        <span id="analyzeSpinner" class="spinner" style="display: none;"></span>
+                    </button>
+                    <div id="errorMessage" class="error-message"></div>
+                </form>
+
+                <div style="margin-top: 1rem; text-align: center;">
+                    <a href="#" id="toggleManualForm" style="color: #007bff; font-weight: 500; font-size: 0.95rem; text-decoration: none; border-bottom: 1px dashed #007bff; transition: all 0.3s;">
+                        <i class="fas fa-keyboard"></i> API Blocked? Enter stats manually
+                    </a>
+                </div>
+
+                <form id="manualForm" action="/predict" method="POST" style="display: none; margin-top: 1.5rem; text-align: left;">
+                    <h3 style="margin-bottom: 1rem; font-size: 1.2rem; font-weight: 600; text-align: center; color: #2d3436;">Manual Entry</h3>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div class="input-group" style="margin-bottom: 0.5rem; grid-column: span 2;">
+                            <i class="fas fa-user-tag" style="position: absolute; left: 20px; top: 22px; color: #495057;"></i>
+                            <input type="text" name="user_id" class="input-field" style="padding: 0.8rem 1rem 0.8rem 3.5rem;" placeholder="Username" required>
+                        </div>
+                        <div class="input-group" style="margin-bottom: 0.5rem;">
+                            <i class="fas fa-users" style="position: absolute; left: 20px; top: 22px; color: #495057;"></i>
+                            <input type="number" name="followers_count" class="input-field" style="padding: 0.8rem 1rem 0.8rem 3.5rem;" placeholder="Followers" required>
+                        </div>
+                        <div class="input-group" style="margin-bottom: 0.5rem;">
+                            <i class="fas fa-user-plus" style="position: absolute; left: 20px; top: 22px; color: #495057;"></i>
+                            <input type="number" name="following_count" class="input-field" style="padding: 0.8rem 1rem 0.8rem 3.5rem;" placeholder="Following" required>
+                        </div>
+                        <div class="input-group" style="margin-bottom: 0.5rem; grid-column: span 2;">
+                            <i class="fas fa-images" style="position: absolute; left: 20px; top: 22px; color: #495057;"></i>
+                            <input type="number" name="post_count" class="input-field" style="padding: 0.8rem 1rem 0.8rem 3.5rem;" placeholder="Total Posts" required>
+                        </div>
+                        <div class="input-group" style="margin-bottom: 0.5rem;">
+                            <select name="has_profile_pic" class="input-field" style="padding: 0.8rem 1rem; cursor: pointer;" required>
+                                <option value="" disabled selected>Has Profile Pic?</option>
+                                <option value="true">Yes</option>
+                                <option value="false">No</option>
+                            </select>
+                        </div>
+                        <div class="input-group" style="margin-bottom: 0.5rem;">
+                            <select name="is_private" class="input-field" style="padding: 0.8rem 1rem; cursor: pointer;" required>
+                                <option value="" disabled selected>Is Private?</option>
+                                <option value="true">Yes</option>
+                                <option value="false">No</option>
+                            </select>
+                        </div>
+                        <div class="input-group" style="margin-bottom: 0.5rem; grid-column: span 2;">
+                            <select name="is_verified" class="input-field" style="padding: 0.8rem 1rem; cursor: pointer;" required>
+                                <option value="" disabled selected>Is Verified?</option>
+                                <option value="true">Yes</option>
+                                <option value="false">No</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button type="submit" class="analyze-btn" style="margin-top: 1rem;">
+                        <i class="fas fa-robot"></i> Predict Manually
+                    </button>
+                </form>
+
+                <div style="margin-top: 2rem; text-align: center; color: #636e72; font-size: 0.9rem;">
+                    <i class="fas fa-lock"></i> Your searches are 100% private and secure
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const toggleBtn = document.getElementById('toggleManualForm');
+            const manualForm = document.getElementById('manualForm');
+            const searchForm = document.getElementById('searchForm');
+            if(toggleBtn) {
+                toggleBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    if(manualForm.style.display === 'none') {
+                        manualForm.style.display = 'block';
+                        searchForm.style.display = 'none';
+                        toggleBtn.innerHTML = '<i class="fas fa-search"></i> Use Username Auto-Search instead';
+                    } else {
+                        manualForm.style.display = 'none';
+                        searchForm.style.display = 'block';
+                        toggleBtn.innerHTML = '<i class="fas fa-keyboard"></i> API Blocked? Enter stats manually';
+                    }
+                });
+            }
+        });
+    </script>
+
+    <!-- Features Section -->
+    <section class="features-section">
+        <div class="container">
+            <h2 class="section-title">Powerful Detection Features</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-bolt"></i>
+                    </div>
+                    <h3>Lightning Fast</h3>
+                    <p>Get instant analysis results in seconds with our optimized AI algorithms.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-brain"></i>
+                    </div>
+                    <h3>AI-Powered</h3>
+                    <p>Advanced deep learning models using CNN and LSTM provide accurate profile verification and
+                        meaningful insights.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h3>Comprehensive Analysis</h3>
+                    <p>Deep profile inspection including follower patterns, posting habits, and engagement metrics.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3>Confidence Scoring</h3>
+                    <p>Get detailed confidence scores and reasoning behind each detection decision.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-user-check"></i>
+                    </div>
+                    <h3>Profile Verification</h3>
+                    <p>Check verification status, account age, and authenticity indicators.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-lock"></i>
+                    </div>
+                    <h3>Privacy Safe</h3>
+                    <p>All analysis is performed securely without storing any personal data.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Loading Section -->
+    <section class="loading-section" id="loadingSection">
+        <div class="container">
+            <div class="loading-card">
+                <div class="spinner"></div>
+                <div class="loading-percentage" id="loadingPercentage">0%</div>
+                <div class="loading-progress-bar">
+                    <div class="loading-progress-fill" id="loadingProgress"></div>
+                </div>
+                <h3>Analyzing Profile...</h3>
+                <p>Please wait while we analyze the profile data</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Results Section -->
+    <section class="results-section" id="resultsSection">
+        <div class="container">
+            <div class="result-card" id="resultCard">
+                <!-- Results will be inserted here by JavaScript -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features-section" id="features">
+        <div class="container">
+            <h2 style="text-align: center; font-size: 2.5rem; margin-bottom: 1rem;">Why Choose Our Analyzer?</h2>
+            <p style="text-align: center; color: #636e72; max-width: 600px; margin: 0 auto;">Advanced features designed
+                to provide accurate and reliable Instagram profile analysis</p>
+
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon icon-blue">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h3>Secure & Private</h3>
+                    <p>Your searches are completely confidential. We don't store any personal data or search history.
+                    </p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon icon-green">
+                        <i class="fas fa-bolt"></i>
+                    </div>
+                    <h3>Lightning Fast</h3>
+                    <p>Get instant results with our optimized analysis engine. No waiting time required.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon icon-purple">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <h3>AI-Powered</h3>
+                    <p>Advanced deep learning models using CNN and LSTM provide accurate profile verification and
+                        meaningful insights.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div style="display: flex; align-items: center; justify-content: center; margin-bottom: 1rem;">
+                    <i class="fab fa-instagram" style="font-size: 2rem; margin-right: 10px;"></i>
+                    <span style="font-size: 1.5rem; font-weight: 700;">NeuroVerify</span>
+                </div>
+                <div class="footer-links">
+                    <a href="#privacy">Privacy Policy</a>
+                    <a href="#terms">Terms of Service</a>
+                    <a href="#contact">Contact Us</a>
+                    <a href="#faq">FAQ</a>
+                </div>
+                <p style="color: #b2bec3;">© 2023 NeuroVerify. Not affiliated with Instagram, Inc.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // DOM Elements
+        const searchForm = document.getElementById('searchForm');
+        const usernameInput = document.getElementById('usernameInput');
+        const analyzeBtn = document.getElementById('analyzeBtn');
+        const analyzeText = document.getElementById('analyzeText');
+        const analyzeSpinner = document.getElementById('analyzeSpinner');
+        const errorMessage = document.getElementById('errorMessage');
+        const loadingSection = document.getElementById('loadingSection');
+        const resultsSection = document.getElementById('resultsSection');
+        const resultCard = document.getElementById('resultCard');
+
+        // Event Listeners
+        searchForm.addEventListener('submit', analyzeProfile);
+
+        // Functions
+        function showError(message) {
+            errorMessage.textContent = message;
+            errorMessage.style.display = 'block';
+            setTimeout(() => {
+                errorMessage.style.display = 'none';
+            }, 5000);
+        }
+
+        function showLoading() {
+            loadingSection.style.display = 'flex';
+            resultsSection.style.display = 'none';
+            analyzeBtn.disabled = true;
+            analyzeText.textContent = 'Analyzing...';
+            analyzeSpinner.style.display = 'inline-block';
+            errorMessage.style.display = 'none';
+
+            // Reset and start loading animation
+            let progress = 0;
+            const loadingPercentage = document.getElementById('loadingPercentage');
+            const loadingProgress = document.getElementById('loadingProgress');
+
+            loadingPercentage.textContent = '0%';
+            loadingProgress.style.width = '0%';
+
+            // Simulate loading progress
+            const loadingInterval = setInterval(() => {
+                progress += Math.random() * 15;
+                if (progress > 90) progress = 90; // Cap at 90% until complete
+
+                loadingPercentage.textContent = Math.round(progress) + '%';
+                loadingProgress.style.width = progress + '%';
+
+                if (progress >= 90) {
+                    clearInterval(loadingInterval);
+                }
+            }, 300);
+
+            // Store interval ID to clear it when loading completes
+            loadingSection.dataset.intervalId = loadingInterval;
+        }
+
+        function hideLoading() {
+            // Complete the loading animation
+            const loadingPercentage = document.getElementById('loadingPercentage');
+            const loadingProgress = document.getElementById('loadingProgress');
+
+            loadingPercentage.textContent = '100%';
+            loadingProgress.style.width = '100%';
+
+            // Clear the loading interval
+            const intervalId = loadingSection.dataset.intervalId;
+            if (intervalId) {
+                clearInterval(intervalId);
+            }
+
+            // Hide loading section after a short delay
+            setTimeout(() => {
+                loadingSection.style.display = 'none';
+                analyzeBtn.disabled = false;
+                analyzeText.textContent = 'Analyze Profile';
+                analyzeSpinner.style.display = 'none';
+            }, 500);
+        }
+
+        function getInstagramImageUrl(url) {
+            if (!url) return 'https://via.placeholder.com/150';
+
+            // Use our proxy endpoint to avoid CORS issues
+            return '/proxy-image/' + encodeURIComponent(url);
+        }
+
+        // Store the analysis data globally for report generation
+        let currentAnalysisData = null;
+
+        function displayResults(data) {
+            console.log('Profile data received:', data.profile);
+            currentAnalysisData = data; // Store data for report generation
+            const isReal = !data.analysis.is_fake;
+            const confidence = Math.round(data.analysis.confidence * 100);
+            const profile = data.profile;
+
+            const profileImageUrl = getInstagramImageUrl(profile.profile_pic_url);
+            console.log('Profile image URL:', profileImageUrl);
+
+            const resultsHTML = `
+                <div class="profile-header">
+                    <img src="${profileImageUrl}" 
+                         alt="Profile" 
+                         class="profile-pic"
+                         onerror="console.log('Image failed to load:', this.src); this.src='https://via.placeholder.com/150'; console.log('Fallback image loaded')">
+                    <div class="profile-info">
+                        <h3>@${profile.username}</h3>
+                        <p>${profile.biography || 'No bio available'}</p>
+                        <div class="verification-badge ${isReal ? 'badge-real' : 'badge-fake'}">
+                            <i class="fas ${isReal ? 'fa-check-circle' : 'fa-exclamation-triangle'}"></i>
+                            ${isReal ? 'Real Profile' : 'Fake Profile'}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="info-grid">
+                    <div class="info-card">
+                        <div class="info-label">Confidence Score</div>
+                        <div class="info-value">${confidence}%</div>
+                        <div class="confidence-bar">
+                            <div class="confidence-fill" style="width: ${confidence}%"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="info-card">
+                        <div class="info-label">Posts</div>
+                        <div class="info-value">${profile.posts || 0}</div>
+                    </div>
+                    
+                    <div class="info-card">
+                        <div class="info-label">Followers</div>
+                        <div class="info-value">${profile.followers ? formatNumber(profile.followers) : '0'}</div>
+                    </div>
+                    
+                    <div class="info-card">
+                        <div class="info-label">Following</div>
+                        <div class="info-value">${profile.following ? formatNumber(profile.following) : '0'}</div>
+                    </div>
+                    
+                    <div class="info-card">
+                        <div class="info-label">Verified</div>
+                        <div class="info-value">${profile.is_verified ? 'Yes' : 'No'}</div>
+                    </div>
+                </div>
+
+                ${data.analysis.reasons.length > 0 ? `
+                    <div class="reasons-card">
+                        <h4>Analysis Reasons:</h4>
+                        <ul>
+                            ${data.analysis.reasons.map(reason => `<li>${reason}</li>`).join('')}
+                        </ul>
+                    </div>
+                ` : ''}
+
+                <div class="report-section">
+                    <button onclick="generateReport()" class="report-btn">
+                        <i class="fas fa-download"></i>
+                        Download Full Report
+                    </button>
+                    <div id="reportContent" style="display: none;">
+                        <!-- Report content will be generated here -->
+                    </div>
+                </div>
+
+                <div style="text-align: center; margin-top: 2rem;">
+                    <button onclick="resetAnalysis()" class="analyze-btn" style="max-width: 300px;">
+                        <i class="fas fa-redo"></i>
+                        Analyze Another Profile
+                    </button>
+                </div>
+            `;
+
+            resultCard.innerHTML = resultsHTML;
+            resultsSection.style.display = 'block';
+            hideLoading();
+
+            // Scroll to results
+            resultsSection.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function generateReport() {
+            if (!currentAnalysisData) {
+                alert('No analysis data available for report generation');
+                return;
+            }
+
+            const data = currentAnalysisData;
+            const profile = data.profile;
+            const isReal = !data.analysis.is_fake;
+            const confidence = Math.round(data.analysis.confidence * 100);
+            const reportDate = new Date().toLocaleString();
+
+            // Generate comprehensive report content
+            const reportContent = `
+NEUROVERIFY INSTAGRAM PROFILE ANALYSIS REPORT
+===============================================
+
+REPORT DETAILS
+--------------
+Generated on: ${reportDate}
+Analysis Tool: NeuroVerify Instagram Profile Analyzer
+Report Type: Comprehensive Profile Analysis
+
+PROFILE INFORMATION
+-------------------
+Username: @${profile.username}
+Full Name: ${profile.full_name || 'Not provided'}
+Biography: ${profile.biography || 'No bio available'}
+Profile URL: https://instagram.com/${profile.username}
+
+ACCOUNT STATUS
+-------------
+Account Type: ${isReal ? 'Real Profile' : 'Fake Profile'}
+Verification Status: ${profile.is_verified ? 'Verified' : 'Not Verified'}
+Privacy Status: ${profile.is_private ? 'Private' : 'Public'}
+
+QUANTITATIVE METRICS
+--------------------
+Posts: ${profile.posts || 0}
+Followers: ${profile.followers || 0}
+Following: ${profile.following || 0}
+Followers/Following Ratio: ${profile.following > 0 ? (profile.followers / profile.following).toFixed(2) : 'N/A'}
+
+ANALYSIS RESULTS
+-----------------
+Confidence Score: ${confidence}%
+Analysis Result: ${isReal ? 'Authentic Profile' : 'Potentially Fake Profile'}
+
+TECHNICAL PARAMETERS
+-------------------
+Profile Picture URL: ${profile.profile_pic_url || 'Not available'}
+External URL: ${profile.external_url || 'Not provided'}
+Account ID: Internal system ID
+
+ANALYSIS FACTORS
+----------------
+${data.analysis.reasons.length > 0 ?
+                    data.analysis.reasons.map((reason, index) => `${index + 1}. ${reason}`).join('\n')
+                    : 'No specific reasons provided'}
+
+RISK ASSESSMENT
+---------------
+Risk Level: ${confidence >= 80 ? 'Low' : confidence >= 60 ? 'Medium' : 'High'}
+Recommendation: ${isReal ? 'Profile appears authentic' : 'Exercise caution with this profile'}
+
+ADDITIONAL NOTES
+----------------
+- This analysis is based on publicly available profile data
+- Machine learning algorithms were used to determine authenticity
+- Results should be considered as guidance, not absolute certainty
+- Profile data was analyzed at the time of report generation
+
+DISCLAIMER
+----------
+This report is generated by NeuroVerify's automated analysis system. 
+While we strive for accuracy, the results should be used as a guide 
+and not as the sole basis for decisions. Always exercise personal 
+judgment when interacting with social media profiles.
+
+For more information, visit: NeuroVerify
+===============================================
+            `;
+
+            // Create and download the report file
+            const blob = new Blob([reportContent], { type: 'text/plain' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `NeuroVerify_Report_${profile.username}_${Date.now()}.txt`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+        }
+
+        function formatNumber(num) {
+            if (num >= 1000000) {
+                return (num / 1000000).toFixed(1) + 'M';
+            } else if (num >= 1000) {
+                return (num / 1000).toFixed(1) + 'K';
+            }
+            return num.toString();
+        }
+
+        function resetAnalysis() {
+            resultsSection.style.display = 'none';
+            usernameInput.value = '';
+            searchForm.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        async function analyzeProfile(e) {
+            e.preventDefault();
+
+            const username = usernameInput.value.trim().replace('@', '');
+
+            if (!username) {
+                showError('Please enter an Instagram username');
+                return;
+            }
+
+            showLoading();
+
+            try {
+                const response = await fetch('/api/analyze/instagram', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ username })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    displayResults(data);
+                } else {
+                    throw new Error(data.error || 'Analysis failed');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showError(error.message || 'Failed to analyze profile. Please try again.');
+                hideLoading();
+            }
+        }
+
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>
